@@ -28,7 +28,7 @@ public class ExposeData extends HttpServlet {
         for(int i=1;i<6;i++){
             Data data = new Data();
             data.setName("数据"+i);
-            data.setNum(i*10-5*i);
+            data.setNum((int) (Math.random()*50));
             datas.add(data);
         }
         Gson gson = new Gson();
@@ -44,6 +44,7 @@ public class ExposeData extends HttpServlet {
                 out.close();
             }
         }
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
