@@ -11,10 +11,56 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <script src="http://cdn.bootcss.com/echarts/3.4.0/echarts.min.js"></script>
     <![endif]-->
 </head>
 <body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 800px;height:600px;"></div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var url = 'http://127.0.0.1:8080/showdata/ExposeData?getDataWay=WIPByLine';
+        $.ajax(url, {
+            crossDomain: true,
+            type:'get',
+            success: function(data) {
+                var jsonobj = eval(data);//通过eval() 函数可以将JSON字符串转化为对象
+                var data1=[];
+                var data2=[];
+                $.each(jsonobj, function (n, value) {
+                    data1.push(value.name);
+                    data2.push(value.num);
+                });
 
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main'));
+
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: 'ECharts 入门示例'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['数量']
+                    },
+                    xAxis: {
+                        data: data1
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: '数量',
+                        type: 'bar',
+                        data: data2
+                    }]
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            }
+        });
+    });
+</script>
 </body>
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
