@@ -43,7 +43,7 @@
           <!-- 这里是新添加的-->
           <compilerArguments>
             <!-- 对应jar放置在项目中的位置-->
-            <extdirs>lib</extdirs>
+            <extdirs>${project.basedir}\WEB-INF\lib</extdirs>
           </compilerArguments>
         </configuration>
       </plugin>
