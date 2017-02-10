@@ -37,22 +37,7 @@ public class ExposeData extends HttpServlet {
             return ;
         }
 
-        SoapObject detail1 = (SoapObject) soapObject.getProperty(0);
-        SoapObject detail2 = (SoapObject) detail1.getProperty(2);
-        SoapObject detail3 = (SoapObject) detail2.getProperty(0);
-
-        List<Data> datas = new ArrayList<Data>();
-
-        for (int i = 0; i <detail3.getPropertyCount(); i++) {
-            SoapObject item = (SoapObject) detail3.getProperty(i);
-            String x = item.toString().substring(item.toString().indexOf("=")+1,item.toString().indexOf(";"));
-            int y = Integer.parseInt(item.toString().substring(item.toString().lastIndexOf("=")+1,item.toString().lastIndexOf(";")));
-
-            Data data = new Data();
-            data.setName(x);
-            data.setNum(y);
-            datas.add(data);
-        }
+        List<Data> datas = GetDataFromWebservice.ParaseData(soapObject);
 
         Gson gson = new Gson();
         String jsonStr = gson.toJson(datas);
