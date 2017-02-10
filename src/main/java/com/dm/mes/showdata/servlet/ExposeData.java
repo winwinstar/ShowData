@@ -38,7 +38,6 @@ public class ExposeData extends HttpServlet {
         }
 
         List<Data> datas = GetDataFromWebservice.ParaseData(soapObject);
-
         Gson gson = new Gson();
         String jsonStr = gson.toJson(datas);
         PrintWriter out = null;
