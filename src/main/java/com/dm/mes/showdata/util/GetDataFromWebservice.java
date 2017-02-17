@@ -1,5 +1,6 @@
 package com.dm.mes.showdata.util;
 
+import com.dm.mes.showdata.bean.AuthItem;
 import com.dm.mes.showdata.bean.Data;
 import com.dm.mes.showdata.constant.Constant;
 import org.ksoap2.SoapEnvelope;
@@ -18,9 +19,33 @@ import java.util.List;
  */
 public class GetDataFromWebservice {
 
-    public static SoapObject GetData(String getDataWay){
+    public static SoapObject getData(String getDataWay){
 
         SoapObject soapObject = new SoapObject(Constant.SERVICE_NS,getDataWay);
+        NtlmTransport ntlmTransport = new NtlmTransport(Constant.SERVICE_URL);
+        ntlmTransport.setCredentials(Constant.username, Constant.password, "", "");
+        ntlmTransport.debug = true;
+        //使用SOAP1.2协议创建Envelop对象
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        //设置与.Net提供的Web Service保持较好的兼容性
+        envelope.dotNet = true;
+        envelope.implicitTypes = true;
+        envelope.bodyOut = soapObject;
+        try {
+            ntlmTransport.call(null, envelope);
+            SoapObject response = (SoapObject) envelope.bodyIn;
+            return response;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static SoapObject getData(SoapObject soapObject){
+
         NtlmTransport ntlmTransport = new NtlmTransport(Constant.SERVICE_URL);
         ntlmTransport.setCredentials(Constant.username, Constant.password, "", "");
         ntlmTransport.debug = true;
@@ -71,5 +96,34 @@ public class GetDataFromWebservice {
             datas.add(data);
         }
         return datas;
+    }
+
+    public List<AuthItem> parseData(SoapObject response) {
+        List<AuthItem> authItemList = new ArrayList<AuthItem>();
+        SoapObject detail1 = (SoapObject) response.getProperty(0);
+        SoapObject detail2 = (SoapObject) detail1.getProperty(2);
+        if(detail2.getPropertyCount() == 0) return null;
+        SoapObject detail3 = (SoapObject) detail2.getProperty(0);
+        SoapObject detail4 = (SoapObject) detail3.getProperty(0);
+        try {
+            String menuName = detail4.getProperty("MenuName").toString();
+            String menuID = detail4.getProperty("MenuID").toString();
+            String menuParentID = detail4.getProperty("MenuParentID").toString();
+            String[] menuNames = menuName.split(",");
+            String[] menuIDs = menuID.split(",");
+            String[] menuParentIDs = menuParentID.split(",");
+            try {
+                for (int i = 0; i < menuNames.length; i++) {
+                    authItemList.add(new AuthItem(menuNames[i], menuIDs[i], menuParentIDs[i], true));
+                }
+                authItemList.add(new AuthItem("test", "6", "-1", true));
+                return authItemList;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

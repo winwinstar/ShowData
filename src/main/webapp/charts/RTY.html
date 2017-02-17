@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <metahttp-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ECharts</title>
+
+    <!-- 引入 echarts.js -->
+    <script src="../js/echarts.min.js" charset="UTF-8"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 1000px;height:600px;"></div>
+<script>
+    var url = '../../../../ExposeData?getDataWay=RTY';
+    $.ajax(url, {
+        crossDomain: true,
+        type:'get',
+        success: function(data) {
+            var jsonobj = eval(data);//通过eval() 函数可以将JSON字符串转化为对象
+            var data1=[];
+            $.each(jsonobj, function (n, value) {
+                data1.push(value.num);
+            });
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            option = {
+                title : {
+                    text: '图表管理'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'center',
+                    data: ['RTY','TRASH']
+                },
+                toolbox: {
+                    feature: {
+                        dataView: {show: true, readOnly: false},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                series : [
+                    {
+                        name: '百分比',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:data1[0], name:'RTY'},
+                            {value:1-data1[0], name:'TRASH'}
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+    });
+</script>
+</body>
+</html>

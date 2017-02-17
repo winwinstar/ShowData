@@ -31,7 +31,7 @@ public class ExposeData extends HttpServlet {
             return ;
         }
         String getDataWay = request.getParameter("getDataWay");
-        SoapObject soapObject = GetDataFromWebservice.GetData(getDataWay);
+        SoapObject soapObject = GetDataFromWebservice.getData(getDataWay);
 
         if(soapObject.equals("") || soapObject == null){
             return ;

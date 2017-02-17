@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <metahttp-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ECharts</title>
+
+    <!-- 引入 echarts.js -->
+    <script src="../js/echarts.min.js" charset="UTF-8"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 1000px;height:600px;"></div>
+<script>
+    var url = '../../../../ExposeData?getDataWay=WIPByProject';
+    $.ajax(url, {
+        crossDomain: true,
+        type:'get',
+        success: function(data) {
+            var jsonobj = eval(data);//通过eval() 函数可以将JSON字符串转化为对象
+            var data1=[];
+            var data2=[];
+            $.each(jsonobj, function (n, value) {
+                data1.push(value.name);
+                data2.push(value.num);
+            });
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '图表管理'
+                },
+                tooltip: {},
+                grid: {
+                    left: '10%',
+                    top: '20%',
+                    right: '10%',
+                    bottom: '15%'
+                },
+                legend: {
+                    data:['ACQUALQTY']
+                },
+                toolbox: {
+                    feature: {
+                        dataView: {show: true, readOnly: false},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                xAxis: {
+                    data: data1
+                },
+                yAxis: {},
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        show: true,
+                        height: 30,
+                        type: 'slider',
+                        top: '90%',
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100
+                    }
+                ],
+                series: [{
+                    name: 'ACQUALQTY',
+                    type: 'bar',
+                    data: data2
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+    });
+</script>
+</body>
+</html>
