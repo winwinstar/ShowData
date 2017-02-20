@@ -220,7 +220,6 @@
             var parentName = dataNow.role;
             var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
             var childName = "";
-
             if(treeNode.checked){
                 authOperation(parentName,treeNode.name,true);
                 if(treeNode.getParentNode()!=null && !treeNode.getParentNode().checked){
