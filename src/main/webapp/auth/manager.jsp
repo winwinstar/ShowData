@@ -243,15 +243,15 @@
                     childName = "";
                 }
                 if(treeNode.children == null){
+                    var count = 0;
                     $.each(treeNode.getParentNode().children, function (n, value) {
-                        var count = 0;
                         if(value.checked){
                             count++;
                         }
-                        if(count<1){
-                            authOperation(parentName,treeNode.getParentNode().name,false);
-                        }
                     });
+                    if(count<1){
+                        authOperation(parentName,treeNode.getParentNode().name,false);
+                    }
                     authOperation(parentName,treeNode.name,false);
                 }
             }
