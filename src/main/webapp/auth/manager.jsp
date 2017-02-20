@@ -70,7 +70,7 @@
                         $.each(value.authItems, function(k,auth){
                             var nodes = treeObj.getNodes();
                             $.each(nodes, function (n, value1) {
-                                if(auth.Id == value1.id && value1.children==null){
+                                if(auth.Id == value1.id ){
                                     treeObj.checkNode(value1,true,true,false);
                                 }
                                 if(value1.children != null){
@@ -219,23 +219,50 @@
 
         function zTreeOnCheck(event, treeId, treeNode) {
             var parentName = dataNow.role;
+            var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+            var childName = "";
+
             if(treeNode.checked){
                 authOperation(parentName,treeNode.name,true);
+                if(treeNode.getParentNode()!=null && !treeNode.getParentNode().checked){
+                    authOperation(parentName,treeNode.getParentNode().name,true);
+                }
                 if(treeNode.children != null){
                     $.each(treeNode.children, function (n, value) {
-                        authOperation(parentName,value.name,true);
+                        childName += value.name +"&"
                     });
+                    authOperation(parentName,childName,true);
+                    childName = "";
                 }
             }else{
-                authOperation(parentName,treeNode.name,false);
                 if(treeNode.children != null){
+                    authOperation(parentName,treeNode.name,false);
                     $.each(treeNode.children, function (n, value) {
-                        authOperation(parentName,value.name,false);
+                        childName += value.name +"&"
                     });
+                    authOperation(parentName,childName,false);
+                    childName = "";
+                }
+                if(treeNode.children == null){
+                    $.each(treeNode.getParentNode().children, function (n, value) {
+                        var count = 0;
+                        if(value.checked){
+                            count++;
+                        }
+                        if(count<1){
+                            authOperation(parentName,treeNode.getParentNode().name,false);
+                        }
+                    });
+                    authOperation(parentName,treeNode.name,false);
                 }
             }
-            window.location.reload();
+            window.setTimeout("refreshPage()",500);
         };
+
+        function refreshPage(){
+            window.location.reload();
+            window.parent.location.reload();
+        }
 
         function authOperation(parentName,childName,action){
             var changeAuth = "";
@@ -265,7 +292,7 @@
                     sy = $("#sy").attr("checked")? "s":"",
                     pn = $("#pn").attr("checked")? "p":"",
                     sn = $("#sn").attr("checked")? "s":"",
-                    type = { "Y":"ps" + sy, "N":"ps"};
+                    type = { "Y" : "", "N" : "" };
             zTree.setting.check.chkboxType = type;
             showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "' + type.N + '" };');
         }

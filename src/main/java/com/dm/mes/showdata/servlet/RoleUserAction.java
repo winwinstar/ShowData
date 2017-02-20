@@ -38,6 +38,7 @@ public class RoleUserAction extends HttpServlet {
             soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
             signal = 0;
             tran = 2;
+            analysis(soapObject,action,parentName,actionMethod,linkURL,childName,signal,tran);
         }
         if(action.equals("addRole")){
             actionMethod = Constant.BuildMenuTransaction_List;
@@ -46,6 +47,7 @@ public class RoleUserAction extends HttpServlet {
             linkURL = "";
             tran = 2;
             soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
+            analysis(soapObject,action,parentName,actionMethod,linkURL,childName,signal,tran);
         }
         if(action.equals("addUser")){
             actionMethod = Constant.BuildMenuTransaction_List;
@@ -55,6 +57,7 @@ public class RoleUserAction extends HttpServlet {
             signal = 0;
             linkURL = "";
             tran = 3;
+            analysis(soapObject,action,parentName,actionMethod,linkURL,childName,signal,tran);
         }
         if(action.equals("delUser")){
             actionMethod = Constant.DeleteMenuTransaction_List;
@@ -64,6 +67,7 @@ public class RoleUserAction extends HttpServlet {
             signal = 0;
             linkURL = "";
             tran = 2;
+            analysis(soapObject,action,parentName,actionMethod,linkURL,childName,signal,tran);
         }
         if(action.equals("changePwd")){
             actionMethod = Constant.BuildMenuTransaction_List;
@@ -73,26 +77,79 @@ public class RoleUserAction extends HttpServlet {
             signal = 1;
             linkURL = request.getParameter("passWord").toString();
             tran = 3;
+            analysis(soapObject,action,parentName,actionMethod,linkURL,childName,signal,tran);
         }
         if(action.equals("addAuth")){
             actionMethod = Constant.BuildMenuTransaction_List;
             parentName = request.getParameter("parentName").toString();
             childName = request.getParameter("childName").toString();
-            soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
             signal = 1;
             linkURL = "";
             tran = 2;
+            String childNames[] = childName.split("&");
+            for(int i=0;i<childNames.length;i++){
+                soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
+                analysis(soapObject,action,parentName,actionMethod,linkURL,childNames[i],signal,tran);
+                System.out.println(childNames[i]);
+            }
         }
         if(action.equals("cancelAuth")){
             actionMethod = Constant.DeleteMenuTransaction_List;
             parentName = request.getParameter("parentName").toString();
             childName = request.getParameter("childName").toString();
-            soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
             signal = 1;
             linkURL = "";
             tran = 3;
+            String childNames[] = childName.split("&");
+            for(String name:childNames){
+                soapObject = new SoapObject(Constant.SERVICE_NS, actionMethod);
+                analysis(soapObject,action,parentName,actionMethod,linkURL,name,signal,tran);
+            }
         }
 
+//        soapObject.addProperty("ParentName", parentName);
+//        soapObject.addProperty("ChildName", childName);
+//        if(!action.equals("delRole") && !action.equals("delUser") && !action.equals("cancelAuth")){
+//            soapObject.addProperty("LinkURL",linkURL);
+//        }
+//        soapObject.addProperty("FromSYS", "BI");
+//        if(!action.equals("delRole") && !action.equals("delUser") && !action.equals("cancelAuth")){
+//            soapObject.addProperty("Signal",signal);
+//        }
+//        soapObject.addProperty("TransSignal", tran);
+//
+//
+//        SoapObject data = GetDataFromWebservice.getData(soapObject);
+//        SoapObject detail1 = (SoapObject) data.getProperty(0);
+//        String responseDetail = "";
+//        try {
+//            SoapObject detail2 = (SoapObject) detail1.getProperty(2);
+//            SoapObject detail3 = (SoapObject) detail2.getProperty(0);
+//            SoapObject item = (SoapObject) detail3.getProperty(0);
+//            responseDetail = item.getProperty("ReturnMsg").toString().split(":")[0];
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        PrintWriter out = null;
+//        try {
+//            out = response.getWriter();
+//            out.write(responseDetail);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (out != null) {
+//                out.close();
+//            }
+//        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+            this.doGet(request,response);
+    }
+
+    public void analysis(SoapObject soapObject,String action,String parentName,String actionMethod,String linkURL,String childName,int signal,int tran){
         soapObject.addProperty("ParentName", parentName);
         soapObject.addProperty("ChildName", childName);
         if(!action.equals("delRole") && !action.equals("delUser") && !action.equals("cancelAuth")){
@@ -103,6 +160,7 @@ public class RoleUserAction extends HttpServlet {
             soapObject.addProperty("Signal",signal);
         }
         soapObject.addProperty("TransSignal", tran);
+
         SoapObject data = GetDataFromWebservice.getData(soapObject);
         SoapObject detail1 = (SoapObject) data.getProperty(0);
         String responseDetail = "";
@@ -115,21 +173,6 @@ public class RoleUserAction extends HttpServlet {
             e.printStackTrace();
         }
 
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-            out.write(responseDetail);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-    }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-            this.doGet(request,response);
     }
 }
