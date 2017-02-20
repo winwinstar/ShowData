@@ -17,7 +17,6 @@
         var url = '../GetUserRoleAuth';
         var jsonobj;
         var dataNow;
-
         if($.cookie("user") == null || $.cookie("user") == "null"){
             top.location.href = "../login.html";
         }
