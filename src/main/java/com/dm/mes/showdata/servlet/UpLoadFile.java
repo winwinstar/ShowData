@@ -102,7 +102,7 @@ public class UpLoadFile extends HttpServlet {
                     "错误信息: " + ex.getMessage());
         }
         // 跳转到 message.jsp
-        getServletContext().getRequestDispatcher("/html/model/message.jsp").forward(
-                request, response);
+//        getServletContext().getRequestDispatcher("/html/model/message.jsp").forward(
+//                request, response);
     }
 }
