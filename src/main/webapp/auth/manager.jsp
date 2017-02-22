@@ -215,7 +215,6 @@
         };
 
         var code;
-
         function zTreeOnCheck(event, treeId, treeNode) {
             var parentName = dataNow.role;
             var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
