@@ -112,6 +112,7 @@ pageEncoding="UTF-8"%>
 	</div>
 </nav>
 
+<!--
 <div style="margin-top:70px;width:100%;float:left;margin-right: 20px">
 	<div id="firstpane" class="menu_list" style="float:left;width:15%">
 		<p class="menu_head current">哲学</p>
@@ -176,7 +177,9 @@ pageEncoding="UTF-8"%>
 		</div>
 	</div>
 
-	<iframe id="iframe" style="width:80%;height:900px;float:left;margin-left: 50px;" frameborder="0"></iframe>
+	-->
+
+	<iframe id="iframe" style="width:80%;height:900px;float:left;margin-left: 50px;margin-top:70px" frameborder="0"></iframe>
 </div>
 
 </body>
